@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
       builder: (context, orientation, deviceType) {
         return MaterialApp(
           theme: theme,
-          title: 'demo_s_application1',
+          title: 'ALive',
           debugShowCheckedModeBanner: false,
           initialRoute: AppRoutes.startingscreen,
           routes: AppRoutes.routes,
