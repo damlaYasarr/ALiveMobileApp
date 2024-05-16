@@ -15,26 +15,47 @@ class _OverviewScreenState extends State<OverviewScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            'Chat with Your Assistant',
-            style: TextStyle(color: Colors.white),
-          ),
-          backgroundColor: Colors.green[900],
-          elevation: 0,
-        ),
-        body: Container(
-          width: double.maxFinite,
-          padding: EdgeInsets.symmetric(horizontal: 16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 16.0),
-              _buildChat(context),
-              Spacer(),
-              _buildMessageInput(context),
-            ],
-          ),
+        body: Stack(
+          children: [
+            // Background image
+            Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(
+                      "assets/images/back.png"), // Path to your background image
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            // Content
+            Column(
+              children: [
+                AppBar(
+                  title: Text(
+                    'Chat with Your Assistant',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  backgroundColor: Colors.green[900],
+                  elevation: 0,
+                ),
+                Expanded(
+                  child: Container(
+                    width: double.maxFinite,
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 16.0),
+                        _buildChat(context),
+                        Spacer(),
+                        _buildMessageInput(context),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -48,9 +69,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
           _buildMessage(
             isMe: true,
             message:
-                'Hello! this is your ai asistant, you can ask any question about your habits !',
+                'Hello! this is your AI assistant, you can ask any question about your habits!',
           ),
-
           // Add more messages as needed
         ],
       ),

@@ -2,10 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/scheduler.dart';
 import 'core/app_export.dart';
+import 'widgets/notification.dart';
 
 var globalMessengerKey = GlobalKey<ScaffoldMessengerState>();
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  final _service = FireBaseApi();
+  try {
+    _service.ConnectNotrifc(); //this code line provides to call all.
+  } catch (e) {
+    print('Error initializing Firebase: $e');
+  }
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);

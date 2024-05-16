@@ -27,44 +27,65 @@ class PaymentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Payment Methods',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Colors.green[900],
-        elevation: 0,
-        actions: [
-          IconButton(
-            onPressed: () {
-              _showCardMenu(context);
-            },
-            icon: Icon(Icons.add, color: Colors.white),
+      body: Stack(
+        children: [
+          // Background image
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    "assets/images/back.png"), // Path to your background image
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          // Content
+          Column(
+            children: [
+              AppBar(
+                title: Text(
+                  'Payment Methods',
+                  style: TextStyle(color: Colors.white),
+                ),
+                backgroundColor: Colors.green[900],
+                elevation: 0,
+                actions: [
+                  IconButton(
+                    onPressed: () {
+                      _showCardMenu(context);
+                    },
+                    icon: Icon(Icons.add, color: Colors.white),
+                  ),
+                ],
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(height: 40),
+                      _buildPaymentDetail(),
+                      SizedBox(height: 20),
+                      _buildTermsAndConditions(),
+                      SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _buildZipCode(),
+                          SizedBox(width: 20),
+                          _buildExpirationDateAndCVV(),
+                        ],
+                      ),
+                      SizedBox(height: 50),
+                      _buildOKButton(context),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(height: 40),
-            _buildPaymentDetail(),
-            SizedBox(height: 20),
-            _buildTermsAndConditions(),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _buildZipCode(),
-                SizedBox(width: 20),
-                _buildExpirationDateAndCVV(),
-              ],
-            ),
-            SizedBox(height: 50),
-            _buildOKButton(context),
-          ],
-        ),
       ),
     );
   }

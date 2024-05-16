@@ -1,6 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'dart:async'; // Timer için gerekli
 import 'package:demo_s_application1/presentation/general_screen/general_screen.dart';
+import 'package:google_sign_in/google_sign_in.dart'; // Google Sign-In paketi
+import 'package:http/http.dart' as http;
+
+import 'package:demo_s_application1/core/utils/image_constant.dart';
 
 class StartingScreen extends StatefulWidget {
   const StartingScreen({Key? key}) : super(key: key);
@@ -16,6 +22,11 @@ class _StartingScreenState extends State<StartingScreen>
 
   bool isAliveVisible = true;
 
+  // Google Sign-In için değişkenler
+  late GoogleSignIn _googleSignIn;
+  bool _isLoggedIn = false;
+  String _userEmail = '';
+  String? responseData;
   @override
   void initState() {
     super.initState();
@@ -30,6 +41,9 @@ class _StartingScreenState extends State<StartingScreen>
         setState(() {});
       });
 
+    // Google Sign-In işlemleri için hazırlık
+    _googleSignIn = GoogleSignIn(scopes: ['email']);
+
     _controller.forward().then((value) {
       // Alive metnini gizle
       Timer(Duration(seconds: 1), () {
@@ -38,13 +52,72 @@ class _StartingScreenState extends State<StartingScreen>
         });
         // Welcome metnini göster ve sayfayı değiştir
         Timer(Duration(seconds: 2), () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => GeneralScreen()),
-          );
+          if (!_isLoggedIn) {
+            _showGoogleSignInDialog(); // Google Sign-In modalını göster
+          } else {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => GeneralScreen()),
+            );
+          }
         });
       });
     });
+  }
+
+  Future<void> postEmail(String email) async {
+    final String url = "http://172.22.0.1:3000/postemail";
+
+    // POST request body
+    Map<String, String> requestBody = {
+      'email': email,
+    };
+
+    // Send a POST request
+    final response = await http.post(
+      Uri.parse(url), // Parse the URL string to a Uri object
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': '*/*',
+        'Connection': 'keep-alive',
+        'Accept-Encoding': 'gzip, deflate, br',
+      },
+      body: jsonEncode(requestBody), // Encode the request body to JSON
+    );
+
+    // Check the status code of the response
+    if (response.statusCode == 200) {
+      // Successful request
+      print('Email successfully posted');
+      print(response.body); // Response body, if needed
+    } else {
+      // Request failed, print the error message
+      print('Failed to post email: ${response.statusCode}');
+    }
+  }
+
+  // Google Sign-In modalı gösteren fonksiyon
+  Future<void> _showGoogleSignInDialog() async {
+    try {
+      GoogleSignInAccount? user = await _googleSignIn.signIn();
+      if (user != null) {
+        setState(() {
+          _isLoggedIn = true;
+          _userEmail = user.email;
+          Globalemail.useremail = user.email;
+        });
+        //buradaki email db'a aktarılacak
+        print('Giriş yapılan e-posta: $_userEmail');
+        postEmail(_userEmail);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => GeneralScreen()),
+        );
+      }
+    } catch (error) {
+      print('Google Sign-In hatası: $error');
+      // Hata durumunda kullanıcıyı uyarmak için bir snackbar gösterebilirsiniz
+    }
   }
 
   @override
