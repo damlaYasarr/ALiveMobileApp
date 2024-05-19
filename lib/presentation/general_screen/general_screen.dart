@@ -1,12 +1,89 @@
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'package:demo_s_application1/core/utils/image_constant.dart';
 import 'package:demo_s_application1/widgets/app_bar/appbar_trailing_button.dart';
 import 'package:demo_s_application1/widgets/app_bar/custom_app_bar.dart';
 import 'package:demo_s_application1/widgets/custom_elevated_button.dart';
-import 'package:flutter/material.dart';
 import 'package:demo_s_application1/core/app_export.dart';
-import 'package:intl/intl.dart';
 
-class GeneralScreen extends StatelessWidget {
-  const GeneralScreen({Key? key}) : super(key: key);
+class Aim {
+  final String name;
+  final DateTime startDay;
+  final DateTime endDay;
+  final int completeDaysCount;
+  final int percentage;
+  Aim({
+    required this.name,
+    required this.startDay,
+    required this.endDay,
+    required this.completeDaysCount,
+    required this.percentage,
+  });
+
+  factory Aim.fromJson(Map<String, dynamic> json) {
+    DateFormat format = DateFormat("dd.MM.yyyy");
+
+    DateTime startDay = format.parse(json['startday']);
+    DateTime endDay = format.parse(json['endday']);
+    int totalDays = endDay.difference(startDay).inDays;
+    int completeDaysCount = json['complete_days_count'];
+
+    int percentage =
+        totalDays != 0 ? ((completeDaysCount / totalDays) * 100).toInt() : 0;
+
+    return Aim(
+        name: json['name'],
+        startDay: startDay,
+        endDay: endDay,
+        completeDaysCount: completeDaysCount,
+        percentage: percentage);
+  }
+}
+
+class GeneralScreen extends StatefulWidget {
+  @override
+  _GeneralScreenState createState() => _GeneralScreenState();
+}
+
+class _GeneralScreenState extends State<GeneralScreen> {
+  List<Aim> _aims = [];
+
+  @override
+  void initState() {
+    super.initState();
+    listAllAims(Globalemail.useremail);
+  }
+
+  Future<void> listAllAims(String email) async {
+    final String url = "http://172.22.0.1:3000/listallAims?email=" + email;
+
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=utf-8',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        List<dynamic> aimsJson = json.decode(utf8.decode(response.bodyBytes));
+        List<Aim> aims = aimsJson.map((json) => Aim.fromJson(json)).toList();
+
+        setState(() {
+          _aims = aims;
+        });
+
+        print('Aims successfully retrieved');
+      } else {
+        print('Failed to retrieve aims: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,12 +123,32 @@ class GeneralScreen extends StatelessWidget {
     return CustomAppBar(
       leadingWidth: 57.h,
       actions: [
-        AppbarTrailingButton(
-          margin: EdgeInsets.symmetric(horizontal: 27.h, vertical: 8.v),
-          onPressed: () {
-            onTapMore(context);
-          },
-        )
+        Row(
+          children: [
+            Text(
+              'alive',
+              style: TextStyle(
+                color: const Color.fromARGB(255, 12, 12, 12),
+                fontSize: 40,
+                fontFamily: "carolingia",
+              ),
+            ),
+            SizedBox(width: 15),
+          ],
+        ),
+        Expanded(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              AppbarTrailingButton(
+                margin: EdgeInsets.symmetric(horizontal: 27.h, vertical: 8.v),
+                onPressed: () {
+                  onTapMore(context);
+                },
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -78,7 +175,7 @@ class GeneralScreen extends StatelessWidget {
   }
 
   Widget _buildAutoHabitCalendar() {
-    // Bugünden itibaren 4 günlük takvim
+    // Generate calendar for the next 4 days starting today
     DateTime today = DateTime.now();
     List<DateTime> nextFourDays =
         List.generate(4, (index) => today.add(Duration(days: index)));
@@ -91,7 +188,7 @@ class GeneralScreen extends StatelessWidget {
         String dayNumber =
             DateFormat('d').format(nextFourDays[index]); // '15', '16', etc.
 
-        bool isToday = index == 0; // İlk gün bugündür
+        bool isToday = index == 0; // First day is today
 
         return Container(
           padding: EdgeInsets.all(4),
@@ -126,40 +223,31 @@ class GeneralScreen extends StatelessWidget {
 
   Widget _buildHabitList(BuildContext context) {
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.4,
-      child: ListView(
+      height: MediaQuery.of(context).size.height * 0.6,
+      child: ListView.builder(
         scrollDirection: Axis.vertical,
-        padding: EdgeInsets.only(left: 20),
-        children: [
-          // get from db
-          Padding(
+        itemCount: _aims.length,
+        itemBuilder: (context, index) {
+          Aim aim = _aims[index];
+          return Padding(
             padding: const EdgeInsets.only(bottom: 8.0),
-            child: _buildHabitCard("Drink Water", "21 days"),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: _buildHabitCard("Quit Smoking", "21 days"),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: _buildHabitCard("Exercise", "9 days"),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: _buildHabitCard("Read a Book", "10 days"),
-          ),
-        ],
+            child: _buildHabitCard(aim),
+          );
+        },
       ),
     );
   }
 
-  Widget _buildHabitCard(String title, String progress) {
+  Widget _buildHabitCard(Aim aim) {
+    double completionPercentage =
+        aim.percentage / 100; // Tamamlanma yüzdesi hesapla
+    double completedWidth = 150 * completionPercentage; // Tamamlanan genişlik
+
     return Container(
       margin: EdgeInsets.only(right: 20),
       padding: EdgeInsets.all(20),
       width: 150,
       decoration: BoxDecoration(
-        color: Colors.white,
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
@@ -173,7 +261,7 @@ class GeneralScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            title,
+            aim.name,
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -181,9 +269,9 @@ class GeneralScreen extends StatelessWidget {
           ),
           SizedBox(height: 10),
           Text(
-            progress,
+            "${aim.percentage} % completed",
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 30,
             ),
           ),
         ],

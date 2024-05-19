@@ -4,6 +4,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:grock/grock.dart';
 
+// burada radio button şeklinde bildirim gelsin. onayla deyince o gelen aim id ile db'a kaydedilsin
+//habitin startday, finish day ve saatini alıp now ile kontrol edip, saat ve zaman aralığı uyuşuyorsa bildirim gönder.
+//post
+//globaluseremail ile user bilgisi çekip, bütün aimleri, çekip hangisi o tarih aralığındaysa onu al
 class FireBaseApi {
   late final FirebaseMessaging msg;
   void SettingNotrification() async {

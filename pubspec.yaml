@@ -24,6 +24,9 @@ flutter:
   assets: 
     - assets/
     - assets/images/
+
+  
+     
   fonts: 
     - family: Inika
       fonts: 
@@ -39,7 +42,16 @@ flutter:
           weight: 400
         - asset: assets/fonts/JosefinSansRomanBold.ttf
           weight: 700
+
     - family: Inter
       fonts: 
         - asset: assets/fonts/InterRegular.ttf
           weight: 400
+      
+    - family: carolingia
+      fonts:
+        - asset: fonts/carolingia.ttf
+    - family: stonehenge
+      fonts:
+        - asset: fonts/stonehen.ttf 
+
