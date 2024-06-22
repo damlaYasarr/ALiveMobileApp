@@ -7,6 +7,8 @@ import 'package:demo_s_application1/widgets/app_bar/appbar_trailing_button.dart'
 import 'package:demo_s_application1/widgets/app_bar/custom_app_bar.dart';
 import 'package:demo_s_application1/widgets/custom_elevated_button.dart';
 import 'package:demo_s_application1/core/app_export.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:demo_s_application1/theme/custom_text_style.dart';
 
 class Aim {
   final String name;
@@ -14,12 +16,14 @@ class Aim {
   final DateTime endDay;
   final int completeDaysCount;
   final int percentage;
+  final int lastday;
   Aim({
     required this.name,
     required this.startDay,
     required this.endDay,
     required this.completeDaysCount,
     required this.percentage,
+    required this.lastday,
   });
 
   factory Aim.fromJson(Map<String, dynamic> json) {
@@ -29,7 +33,7 @@ class Aim {
     DateTime endDay = format.parse(json['endday']);
     int totalDays = endDay.difference(startDay).inDays;
     int completeDaysCount = json['complete_days_count'];
-
+    int lastday = totalDays;
     int percentage =
         totalDays != 0 ? ((completeDaysCount / totalDays) * 100).toInt() : 0;
 
@@ -38,11 +42,14 @@ class Aim {
         startDay: startDay,
         endDay: endDay,
         completeDaysCount: completeDaysCount,
-        percentage: percentage);
+        percentage: percentage,
+        lastday: totalDays);
   }
 }
 
 class GeneralScreen extends StatefulWidget {
+  GeneralScreen({Key? key}) : super(key: key);
+
   @override
   _GeneralScreenState createState() => _GeneralScreenState();
 }
@@ -53,7 +60,39 @@ class _GeneralScreenState extends State<GeneralScreen> {
   @override
   void initState() {
     super.initState();
+
     listAllAims(Globalemail.useremail);
+  }
+
+  Future<void> deleteHabit(String email, String aimName) async {
+    final Uri url = Uri.parse('http://172.22.0.1:3000/deletehabit');
+
+    // Construct the URL with query parameters
+    final String queryParameters = '?email=$email&name=$aimName';
+    final Uri finalUrl = Uri.parse('$url$queryParameters');
+
+    // Make the DELETE request
+    try {
+      final response = await http.delete(
+        finalUrl,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+
+      // Check if the request was successful (status code 200-299)
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        // Remove the deleted habit from _aims list and update the UI
+        setState(() {
+          _aims.removeWhere((aim) => aim.name == aimName);
+        });
+        print('Habit deletion request successful');
+      } else {
+        print('Failed to delete habit: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Exception during habit deletion request: $e');
+    }
   }
 
   Future<void> listAllAims(String email) async {
@@ -92,6 +131,9 @@ class _GeneralScreenState extends State<GeneralScreen> {
         children: [
           // Background image
           Container(
+            width: MediaQuery.of(context)
+                .size
+                .width, // Set width to match screen width
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: AssetImage(
@@ -127,27 +169,25 @@ class _GeneralScreenState extends State<GeneralScreen> {
           children: [
             Text(
               'alive',
-              style: TextStyle(
-                color: const Color.fromARGB(255, 12, 12, 12),
-                fontSize: 40,
-                fontFamily: "carolingia",
+
+              style: GoogleFonts.pacifico(
+                fontSize: 45, // Use appropriate font size
               ),
+              // Use appropriate font here
             ),
-            SizedBox(width: 15),
+            SizedBox(width: 100),
           ],
         ),
-        Expanded(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              AppbarTrailingButton(
-                margin: EdgeInsets.symmetric(horizontal: 27.h, vertical: 8.v),
-                onPressed: () {
-                  onTapMore(context);
-                },
-              ),
-            ],
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            AppbarTrailingButton(
+              margin: EdgeInsets.symmetric(horizontal: 27.h, vertical: 8.v),
+              onPressed: () {
+                onTapMore(context);
+              },
+            ),
+          ],
         ),
       ],
     );
@@ -239,9 +279,8 @@ class _GeneralScreenState extends State<GeneralScreen> {
   }
 
   Widget _buildHabitCard(Aim aim) {
-    double completionPercentage =
-        aim.percentage / 100; // Tamamlanma yüzdesi hesapla
-    double completedWidth = 150 * completionPercentage; // Tamamlanan genişlik
+    double completionPercentage = aim.percentage / 100;
+    double completedWidth = 150 * completionPercentage;
 
     return Container(
       margin: EdgeInsets.only(right: 20),
@@ -257,21 +296,48 @@ class _GeneralScreenState extends State<GeneralScreen> {
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            aim.name,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                aim.name,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                "${aim.lastday} duration",
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                "${aim.percentage} % completed",
+                style: TextStyle(
+                  fontSize: 30,
+                ),
+              ),
+            ],
           ),
-          SizedBox(height: 10),
-          Text(
-            "${aim.percentage} % completed",
-            style: TextStyle(
-              fontSize: 30,
+          GestureDetector(
+            onTap: () {
+              // Handle delete action here
+              // Example: Delete the aim based on aim.id or aim.name
+              String aimname = aim.name;
+
+              deleteHabit(Globalemail.useremail, aimname);
+            },
+            child: Icon(
+              Icons.delete,
+              size: 24,
+              color: Colors.red,
             ),
           ),
         ],

@@ -19,7 +19,7 @@ class _StartingScreenState extends State<StartingScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
-
+  late final http.Client httpClient;
   bool isAliveVisible = true;
 
   // Google Sign-In için değişkenler
@@ -96,9 +96,20 @@ class _StartingScreenState extends State<StartingScreen>
     }
   }
 
-  // Google Sign-In modalı gösteren fonksiyon
   Future<void> _showGoogleSignInDialog() async {
     try {
+      // Eğer kullanıcı daha önce giriş yaptıysa ve bu e-posta ile hesap oluşturulmuşsa,
+      // doğrudan GeneralScreen'e yönlendir.
+      if (_isLoggedIn && _userEmail.isNotEmpty) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => GeneralScreen()),
+        );
+        return;
+      }
+
+      // Eğer kullanıcı daha önce giriş yapmamışsa veya hesap oluşturulmamışsa,
+      // Google hesabı ile giriş yapma işlemine devam et.
       GoogleSignInAccount? user = await _googleSignIn.signIn();
       if (user != null) {
         setState(() {

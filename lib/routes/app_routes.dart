@@ -6,6 +6,9 @@ import '../presentation/mainpage_screen/mainpage_screen.dart';
 import '../presentation/overview_screen/overview_screen.dart';
 import '../presentation/payment_screen/payment_screen.dart';
 import '../presentation/app_navigation_screen/app_navigation_screen.dart';
+import 'package:http/http.dart' as http;
+
+late final http.Client httpClient;
 
 class AppRoutes {
   static const String startingscreen = '/startingscreen';

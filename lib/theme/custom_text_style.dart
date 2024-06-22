@@ -58,4 +58,10 @@ extension on TextStyle {
       fontFamily: 'Josefin Sans',
     );
   }
+
+  TextStyle get playwrite {
+    return copyWith(
+      fontFamily: 'Play',
+    );
+  }
 }

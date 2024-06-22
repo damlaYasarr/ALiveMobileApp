@@ -43,10 +43,10 @@ class _MainpageScreenState extends State<MainpageScreen> {
     // POST request body
     Map<String, String> requestBody = {
       'email': email,
-      'aim': aim,
-      'aim_date': aimDate,
+      'name': aim,
+      'startday': aimDate,
       'endday': endDay,
-      'notif': notification,
+      'notification_hour': notification,
     };
 
     // Send a POST request
