@@ -1,19 +1,20 @@
 
 # alive mobile app
-### Table of contents
-- [System requirements](#system-requirements)
-- [Figma design guidelines for better UI accuracy](#figma-design-guideline-for-better-accuracy)
-- [Check the UI of the entire app](#app-navigations)
-- [Application structure](#project-structure)
-- [How to format your code?](#how-you-can-do-code-formatting)
-- [How you can improve code readability?](#how-you-can-improve-the-readability-of-code)
-- [Libraries and tools used](#libraries-and-tools-used)
-- [Support](#support)
+
+This is a habit tracking mobile app. People can easily track their abilities throughout the day and month. 
+
+The aim of the app is to easily build habits. The logic of using the app is very simple; the habit is added, the day and time are set and confirmed within this period.  
+ 
+### How to start project? 
+- ```flutter run <emulatorname>```
+- ``` flutter run ```
+
+
 
 ### System requirements
 
-Dart SDK Version 2.18.0 or greater.
-Flutter SDK Version 3.3.0 or greater.
+* Dart SDK Version 2.18.0 or greater.
+* Flutter SDK Version 3.3.0 or greater.
 
 
 
@@ -39,6 +40,7 @@ After successful build, your application structure should look like this:
     ├── routes                      - It contains all the routes of the application
     └── theme                       - It contains app theme and decoration classes
     └── widgets                     - It contains all custom widget classes
+          ├── notification.dart     - It contains all notification settings
 ```
 ### How to format your code?
 
@@ -51,13 +53,32 @@ After successful build, your application structure should look like this:
 
 Resolve the errors and warnings that are shown in the application.
 
-### Support
-
-If you have any problems or questions, go to our Discord channel, where we will help you as quickly as possible: https://discord.com/invite/rFMnCG5MZ7
-
 ### Fonts
 We were unable to find the following Fonts, Please add manually to ```assets/fonts``` 
 
 ```
 jsMathcmbx10.ttf
 ```
+
+```
+google fonts
+```
+
+
+
+## images of mobile pages 
+
+### starting screen 
+![STARTING PAGE](/images/starting.png)
+
+### list all habit screen 
+
+![MAIN PAGE](/images/listallhabit.png)
+
+### add new habit screen 
+
+![NEW HABIT PAGE](/images/addnewhabit.png)
+
+### track your all habit  
+
+![CALENDAR PAGE](/images/trackhabit.png)

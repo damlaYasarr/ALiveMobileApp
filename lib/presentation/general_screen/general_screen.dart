@@ -264,23 +264,42 @@ class _GeneralScreenState extends State<GeneralScreen> {
   Widget _buildHabitList(BuildContext context) {
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.6,
-      child: ListView.builder(
-        scrollDirection: Axis.vertical,
-        itemCount: _aims.length,
-        itemBuilder: (context, index) {
-          Aim aim = _aims[index];
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: _buildHabitCard(aim),
-          );
-        },
-      ),
+      child: _aims.isEmpty
+          ? Container(
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 249, 252, 215),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              alignment: Alignment.center,
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Text(
+                  'This is the habit tracking application!\n'
+                  'Our aim is to help you gain habits\n'
+                  'for the dream version of yourself.\n',
+                  style: TextStyle(fontSize: 16.0),
+                  textAlign: TextAlign.justify,
+                ),
+              ),
+            )
+          : ListView.builder(
+              scrollDirection: Axis.vertical,
+              itemCount: _aims.length,
+              itemBuilder: (context, index) {
+                Aim aim = _aims[index];
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: _buildHabitCard(aim),
+                );
+              },
+            ),
     );
   }
 
   Widget _buildHabitCard(Aim aim) {
-    double completionPercentage = aim.percentage / 100;
-    double completedWidth = 150 * completionPercentage;
+    // fix here !! math calculation is false
+    int completionPercentage = (aim.percentage).round();
+    int completedWidth = (150 * (completionPercentage / 100)).round();
 
     return Container(
       margin: EdgeInsets.only(right: 20),
@@ -319,7 +338,7 @@ class _GeneralScreenState extends State<GeneralScreen> {
               ),
               SizedBox(height: 10),
               Text(
-                "${aim.percentage} % completed",
+                "${completionPercentage} % completed",
                 style: TextStyle(
                   fontSize: 30,
                 ),
@@ -328,8 +347,6 @@ class _GeneralScreenState extends State<GeneralScreen> {
           ),
           GestureDetector(
             onTap: () {
-              // Handle delete action here
-              // Example: Delete the aim based on aim.id or aim.name
               String aimname = aim.name;
 
               deleteHabit(Globalemail.useremail, aimname);
