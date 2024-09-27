@@ -35,7 +35,7 @@ class Aim {
     int completeDaysCount = json['complete_days_count'];
     int lastday = totalDays;
     int percentage =
-        totalDays != 0 ? ((completeDaysCount / totalDays) * 100).toInt() : 0;
+        (totalDays > 0) ? ((completeDaysCount * 100) ~/ totalDays) : 0;
 
     return Aim(
         name: json['name'],
@@ -65,7 +65,7 @@ class _GeneralScreenState extends State<GeneralScreen> {
   }
 
   Future<void> deleteHabit(String email, String aimName) async {
-    final Uri url = Uri.parse('http://172.22.0.1:3000/deletehabit');
+    final Uri url = Uri.parse('http://172.18.0.1:3000/deletehabit');
 
     // Construct the URL with query parameters
     final String queryParameters = '?email=$email&name=$aimName';
@@ -96,7 +96,7 @@ class _GeneralScreenState extends State<GeneralScreen> {
   }
 
   Future<void> listAllAims(String email) async {
-    final String url = "http://172.22.0.1:3000/listallAims?email=" + email;
+    final String url = "http://172.18.0.1:3000/listallAims?email=" + email;
 
     try {
       final response = await http.get(
@@ -298,7 +298,7 @@ class _GeneralScreenState extends State<GeneralScreen> {
 
   Widget _buildHabitCard(Aim aim) {
     // fix here !! math calculation is false
-    int completionPercentage = (aim.percentage).round();
+    int completionPercentage = aim.percentage; // here is calculated days
     int completedWidth = (150 * (completionPercentage / 100)).round();
 
     return Container(
@@ -365,43 +365,66 @@ class _GeneralScreenState extends State<GeneralScreen> {
   Widget _buildActionButtons(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
         children: [
-          Expanded(
-            child: CustomElevatedButton(
-              height: 50,
-              width: double.infinity,
-              text: "Track Habits",
-              buttonTextStyle: TextStyle(
-                fontSize: 14,
-                color: Colors.white,
-              ),
-              buttonStyle: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green[900],
-              ),
-              onPressed: () {
-                onTapTracking(context);
-              },
+          // First Button: "Go to history"
+          CustomElevatedButton(
+            height: 50,
+            width: double.infinity,
+            text: "Go to History",
+            buttonTextStyle: TextStyle(
+              fontSize: 14,
+              color: Colors.white,
             ),
+            buttonStyle: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green[900],
+            ),
+            onPressed: () {
+              goHistoryPage(context);
+            },
           ),
-          SizedBox(width: 10),
-          Expanded(
-            child: CustomElevatedButton(
-              height: 50,
-              width: double.infinity,
-              text: "Add",
-              buttonTextStyle: TextStyle(
-                fontSize: 14,
-                color: Colors.white,
+          SizedBox(height: 20), // Space between buttons
+
+          // Row containing "Track Habits" and "Add" buttons
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: CustomElevatedButton(
+                  height: 50,
+                  width: double.infinity,
+                  text: "Track Habits",
+                  buttonTextStyle: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white,
+                  ),
+                  buttonStyle: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green[900],
+                  ),
+                  onPressed: () {
+                    onTapTracking(context);
+                  },
+                ),
               ),
-              buttonStyle: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green[900],
+              SizedBox(width: 10), // Space between buttons
+              Expanded(
+                child: CustomElevatedButton(
+                  height: 50,
+                  width: double.infinity,
+                  text: "Add",
+                  buttonTextStyle: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white,
+                  ),
+                  buttonStyle: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green[900],
+                  ),
+                  onPressed: () {
+                    onTapAddNewHabit(context);
+                  },
+                ),
               ),
-              onPressed: () {
-                onTapAddNewHabit(context);
-              },
-            ),
+            ],
           ),
         ],
       ),
@@ -409,7 +432,7 @@ class _GeneralScreenState extends State<GeneralScreen> {
   }
 
   void onTapMore(BuildContext context) {
-    Navigator.pushNamed(context, AppRoutes.paymentScreen);
+    Navigator.pushNamed(context, AppRoutes.feedbackscreen);
   }
 
   void onTapTracking(BuildContext context) {
@@ -417,6 +440,10 @@ class _GeneralScreenState extends State<GeneralScreen> {
   }
 
   void onTapAddNewHabit(BuildContext context) {
-    Navigator.pushNamed(context, AppRoutes.mainpageScreen);
+    Navigator.pushNamed(context, AppRoutes.addhabitscreen);
+  }
+
+  void goHistoryPage(BuildContext context) {
+    Navigator.pushNamed(context, AppRoutes.overviewScreen);
   }
 }

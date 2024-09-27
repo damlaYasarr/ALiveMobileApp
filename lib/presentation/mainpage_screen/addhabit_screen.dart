@@ -6,14 +6,14 @@ import 'package:demo_s_application1/presentation/general_screen/general_screen.d
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 
-class MainpageScreen extends StatefulWidget {
-  const MainpageScreen({Key? key}) : super(key: key);
+class AddHbabitScreen extends StatefulWidget {
+  const AddHbabitScreen({Key? key}) : super(key: key);
 
   @override
   _MainpageScreenState createState() => _MainpageScreenState();
 }
 
-class _MainpageScreenState extends State<MainpageScreen> {
+class _MainpageScreenState extends State<AddHbabitScreen> {
   late TextEditingController habitNameController;
   late DateTime startDate;
   late DateTime endDate;
@@ -38,7 +38,7 @@ class _MainpageScreenState extends State<MainpageScreen> {
 
   Future<void> addNewAim(String email, String aim, String aimDate,
       String endDay, String notification) async {
-    final String url = "http://172.22.0.1:3000/addnewaim";
+    final String url = "http://172.18.0.1:3000/addnewaim";
 
     // POST request body
     Map<String, String> requestBody = {

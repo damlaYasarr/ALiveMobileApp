@@ -47,7 +47,7 @@ class AppNavigationScreen extends StatelessWidget {
                           context,
                           screenTitle: "mainpage",
                           onTapScreenTitle: () => onTapScreenTitle(
-                              context, AppRoutes.mainpageScreen),
+                              context, AppRoutes.addhabitscreen),
                         ),
                         _buildScreenTitle(
                           context,
@@ -59,7 +59,7 @@ class AppNavigationScreen extends StatelessWidget {
                           context,
                           screenTitle: "payment",
                           onTapScreenTitle: () => onTapScreenTitle(
-                              context, AppRoutes.paymentScreen),
+                              context, AppRoutes.feedbackscreen),
                         ),
                       ],
                     ),

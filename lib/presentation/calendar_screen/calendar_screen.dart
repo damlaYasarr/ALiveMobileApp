@@ -7,6 +7,7 @@ import 'package:demo_s_application1/widgets/app_bar/custom_app_bar.dart';
 import 'package:demo_s_application1/core/app_export.dart';
 import 'dart:convert';
 
+// add here come graphs for improveemtn.
 class Active {
   final List<DateTime> completedDays;
   final int id;
@@ -71,7 +72,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Future<void> getActives(String email) async {
-    final String url = "http://172.22.0.1:3000/activedays?email=" + email;
+    final String url = "http://172.18.0.1:3000/activedays?email=" + email;
 
     try {
       final response = await http.get(
