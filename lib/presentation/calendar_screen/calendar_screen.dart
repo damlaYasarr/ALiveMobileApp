@@ -121,7 +121,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
               children: [
                 SizedBox(height: 30.0),
                 Text(
-                  '${_calculateCompletionPercentage().toStringAsFixed(2)}%',
+                  '${_calculateCompletionPercentage().toInt()}%',
                   style: TextStyle(
                       fontSize: 60.0,
                       fontWeight: FontWeight.bold,

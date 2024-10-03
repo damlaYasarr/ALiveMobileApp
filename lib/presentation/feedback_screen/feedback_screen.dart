@@ -65,7 +65,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
 
                 // New Button: "Would you like to see your progress?"
                 Padding(
-                  padding: const EdgeInsets.all(40.0),
+                  padding: const EdgeInsets.all(50.0),
                   child: ElevatedButton(
                     onPressed: () {
                       // Action for the progress button

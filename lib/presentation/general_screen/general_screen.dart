@@ -149,9 +149,9 @@ class _GeneralScreenState extends State<GeneralScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildTitle(),
-                SizedBox(height: 20),
+                SizedBox(height: 15),
                 _buildHabitList(context),
-                SizedBox(height: 30),
+                SizedBox(height: 9),
                 _buildActionButtons(context),
               ],
             ),
@@ -364,7 +364,7 @@ class _GeneralScreenState extends State<GeneralScreen> {
 
   Widget _buildActionButtons(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 5),
       child: Column(
         children: [
           // First Button: "Go to history"
