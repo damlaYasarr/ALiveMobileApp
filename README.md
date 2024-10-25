@@ -68,29 +68,12 @@ google fonts
 
 ## images of mobile pages 
 
-### starting screen 
-![STARTING PAGE](/images/starting.png)
-
-### list all habit screen 
-
-![MAIN PAGE](/images/listallhabits.png)
-
-### add new habit screen 
-
-![NEW HABIT PAGE](/images/addnewhabit.png)
-
-### track your all habit  
-
-![CALENDAR PAGE](/images/tracking.png)
-
-![CALENDAR PAGE 2](/images/tracking2.png)
-
-
-### feedback screen 
-
-![FEEDBACK SCREEN ](/images/feedback.png)
-
-
-### history
-
-![HISTORY SCREEN ](/images/history.png)
+<div style="display: flex; flex-wrap: wrap; padding: 10px; margin: 0; justify-content: space-around;">
+    <img src="images/starting.png" alt="STARTING PAGE" width="300" style="margin: 10px;" />
+    <img src="images/listallhabits.png" alt="MAIN PAGE" width="300" style="margin: 10px;" />
+    <img src="images/addnewhabit.png" alt="NEW HABIT PAGE" width="300" style="margin: 10px;" />
+    <img src="images/tracking.png" alt="CALENDAR PAGE" width="300" style="margin: 10px;" />
+    <img src="images/tracking2.png" alt="CALENDAR PAGE 2" width="300" style="margin: 10px;" />
+    <img src="images/feedback.png" alt="FEEDBACK SCREEN" width="300" style="margin: 10px;" />
+    <img src="images/history.png" alt="HISTORY SCREEN" width="300" style="margin: 10px;" />
+</div>
