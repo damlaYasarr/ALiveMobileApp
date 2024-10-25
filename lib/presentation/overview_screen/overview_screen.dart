@@ -1,7 +1,6 @@
 import 'dart:convert';
-
+import 'package:demo_s_application1/core/utils/image_constant.dart';
 import 'package:flutter/material.dart';
-import 'package:demo_s_application1/core/app_export.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 
@@ -11,34 +10,34 @@ class Aim {
   final DateTime endDay;
   final int completeDaysCount;
   final int percentage;
-  final int lastday;
+  final int lastDay;
+
   Aim({
     required this.name,
     required this.startDay,
     required this.endDay,
     required this.completeDaysCount,
     required this.percentage,
-    required this.lastday,
+    required this.lastDay,
   });
 
   factory Aim.fromJson(Map<String, dynamic> json) {
     DateFormat format = DateFormat("dd.MM.yyyy");
-
     DateTime startDay = format.parse(json['startday']);
     DateTime endDay = format.parse(json['endday']);
     int totalDays = endDay.difference(startDay).inDays;
     int completeDaysCount = json['complete_days_count'];
-    int lastday = totalDays;
     int percentage =
         (totalDays > 0) ? ((completeDaysCount * 100) ~/ totalDays) : 0;
 
     return Aim(
-        name: json['name'],
-        startDay: startDay,
-        endDay: endDay,
-        completeDaysCount: completeDaysCount,
-        percentage: percentage,
-        lastday: totalDays);
+      name: json['name'],
+      startDay: startDay,
+      endDay: endDay,
+      completeDaysCount: completeDaysCount,
+      percentage: percentage,
+      lastDay: totalDays,
+    );
   }
 }
 
@@ -51,9 +50,10 @@ class OverviewScreen extends StatefulWidget {
 
 class _OverviewScreenState extends State<OverviewScreen> {
   List<Aim> _aims = [];
+
   Future<void> listExpiredAims(String email) async {
     final String url =
-        "http://172.18.0.1:3000/listexpiredhabits?email=" + email;
+        "http://192.168.1.102:3000/listexpiredhabits?email=" + email;
 
     try {
       final response = await http.get(
@@ -81,6 +81,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    listExpiredAims(Globalemail.useremail);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
@@ -90,13 +96,11 @@ class _OverviewScreenState extends State<OverviewScreen> {
             Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage(
-                      "assets/images/back.png"), // Path to your background image
+                  image: AssetImage("assets/images/back.png"),
                   fit: BoxFit.cover,
                 ),
               ),
             ),
-            // Content
             Column(
               children: [
                 AppBar(
@@ -111,15 +115,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
                   child: Container(
                     width: double.maxFinite,
                     padding: EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 16.0),
-                        _buildExpiredHabits(context),
-                        Spacer(),
-                        // it listed
-                      ],
-                    ),
+                    child: _buildExpiredHabits(context),
                   ),
                 ),
               ],
@@ -130,17 +126,23 @@ class _OverviewScreenState extends State<OverviewScreen> {
     );
   }
 
-  _buildExpiredHabits(BuildContext context) {}
+  Widget _buildExpiredHabits(BuildContext context) {
+    return ListView.builder(
+      itemCount: _aims.length,
+      itemBuilder: (context, index) {
+        return _buildHabitCard(_aims[index]);
+      },
+    );
+  }
+
   Widget _buildHabitCard(Aim aim) {
-    // fix here !! math calculation is false
-    int completionPercentage = aim.percentage; // here is calculated days
-    int completedWidth = (150 * (completionPercentage / 100)).round();
+    int completionPercentage = aim.percentage;
 
     return Container(
-      margin: EdgeInsets.only(right: 20),
-      padding: EdgeInsets.all(20),
-      width: 150,
+      margin: EdgeInsets.symmetric(vertical: 8.0),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
+        color: const Color.fromARGB(255, 197, 197, 197).withOpacity(0.8),
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
@@ -150,32 +152,44 @@ class _OverviewScreenState extends State<OverviewScreen> {
           ),
         ],
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Text(
+            aim.name,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+            "${DateFormat('dd.MM.yyyy').format(aim.startDay)} - ${DateFormat('dd.MM.yyyy').format(aim.endDay)}",
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey[700],
+            ),
+          ),
+          SizedBox(height: 8),
+          Row(
             children: [
               Text(
-                aim.name,
+                "$completionPercentage% completed",
                 style: TextStyle(
                   fontSize: 16,
+                  color: Colors.green[800],
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 10),
-              Text(
-                " ${aim.startDay}  - ${aim.endDay}",
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 10),
-              Text(
-                "${completionPercentage} % completed",
-                style: TextStyle(
-                  fontSize: 30,
+              Spacer(),
+              Container(
+                width: 150 *
+                    (completionPercentage /
+                        100), // Dynamic width based on percentage
+                height: 8,
+                decoration: BoxDecoration(
+                  color: Colors.green[800],
+                  borderRadius: BorderRadius.circular(4),
                 ),
               ),
             ],

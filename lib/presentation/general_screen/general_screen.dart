@@ -64,8 +64,19 @@ class _GeneralScreenState extends State<GeneralScreen> {
     listAllAims(Globalemail.useremail);
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Sayfa her açıldığında bu metod çağrılır
+    listAllAims(Globalemail.useremail);
+  }
+
+  void refreshaim(String email) {
+    listAllAims(email);
+  }
+
   Future<void> deleteHabit(String email, String aimName) async {
-    final Uri url = Uri.parse('http://172.18.0.1:3000/deletehabit');
+    final Uri url = Uri.parse('http://192.168.1.102:3000/deletehabit');
 
     // Construct the URL with query parameters
     final String queryParameters = '?email=$email&name=$aimName';
@@ -96,7 +107,7 @@ class _GeneralScreenState extends State<GeneralScreen> {
   }
 
   Future<void> listAllAims(String email) async {
-    final String url = "http://172.18.0.1:3000/listallAims?email=" + email;
+    final String url = "http://192.168.1.102:3000/listallAims?email=" + email;
 
     try {
       final response = await http.get(
@@ -167,22 +178,34 @@ class _GeneralScreenState extends State<GeneralScreen> {
       actions: [
         Row(
           children: [
-            Text(
-              'alive',
-
-              style: GoogleFonts.pacifico(
-                fontSize: 45, // Use appropriate font size
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => GeneralScreen(),
+                  ),
+                );
+              },
+              child: Padding(
+                padding: EdgeInsets.only(
+                    top: 0.0), // Adjust this value to move the text higher
+                child: Text(
+                  'alive',
+                  style: GoogleFonts.pacifico(
+                    fontSize: 35,
+                  ),
+                ),
               ),
-              // Use appropriate font here
             ),
-            SizedBox(width: 100),
+            SizedBox(width: 110),
           ],
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             AppbarTrailingButton(
-              margin: EdgeInsets.symmetric(horizontal: 27.h, vertical: 8.v),
+              margin: EdgeInsets.symmetric(horizontal: 20.h, vertical: 8.v),
               onPressed: () {
                 onTapMore(context);
               },
@@ -263,7 +286,7 @@ class _GeneralScreenState extends State<GeneralScreen> {
 
   Widget _buildHabitList(BuildContext context) {
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.6,
+      height: MediaQuery.of(context).size.height * 0.5,
       child: _aims.isEmpty
           ? Container(
               decoration: BoxDecoration(
@@ -297,65 +320,88 @@ class _GeneralScreenState extends State<GeneralScreen> {
   }
 
   Widget _buildHabitCard(Aim aim) {
-    // fix here !! math calculation is false
-    int completionPercentage = aim.percentage; // here is calculated days
-    int completedWidth = (150 * (completionPercentage / 100)).round();
+    int completionPercentage = aim.percentage;
+    double completedWidth = 150 * (completionPercentage / 100);
 
     return Container(
-      margin: EdgeInsets.only(right: 20),
-      padding: EdgeInsets.all(20),
-      width: 150,
+      margin: EdgeInsets.only(bottom: 8.0),
+      padding: EdgeInsets.all(16.0),
       decoration: BoxDecoration(
+        color: Color(0xFFF9F9F9), // Kart rengi
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 5,
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 7,
             offset: Offset(0, 3),
           ),
         ],
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                aim.name,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  aim.name,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.teal[800],
+                  ),
                 ),
-              ),
-              SizedBox(height: 10),
-              Text(
-                "${aim.lastday} duration",
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
+                SizedBox(height: 8),
+                Text(
+                  "Duration: ${aim.lastday} days",
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.teal[700],
+                  ),
                 ),
-              ),
-              SizedBox(height: 10),
-              Text(
-                "${completionPercentage} % completed",
-                style: TextStyle(
-                  fontSize: 30,
+                SizedBox(height: 8),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        height: 10,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: Stack(
+                          children: [
+                            Container(
+                              width: completedWidth,
+                              decoration: BoxDecoration(
+                                color: Colors.green,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      "$completionPercentage%",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.green[900],
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
-          GestureDetector(
-            onTap: () {
-              String aimname = aim.name;
-
-              deleteHabit(Globalemail.useremail, aimname);
-            },
-            child: Icon(
-              Icons.delete,
-              size: 24,
-              color: Colors.red,
+              ],
             ),
+          ),
+          IconButton(
+            icon: Icon(Icons.delete, color: Colors.red),
+            onPressed: () {
+              deleteHabit(Globalemail.useremail, aim.name);
+            },
           ),
         ],
       ),
@@ -433,6 +479,10 @@ class _GeneralScreenState extends State<GeneralScreen> {
 
   void onTapMore(BuildContext context) {
     Navigator.pushNamed(context, AppRoutes.feedbackscreen);
+  }
+
+  void refreshpage(BuildContext context) {
+    Navigator.pushNamed(context, AppRoutes.generalScreen);
   }
 
   void onTapTracking(BuildContext context) {

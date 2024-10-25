@@ -72,7 +72,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Future<void> getActives(String email) async {
-    final String url = "http://172.18.0.1:3000/activedays?email=" + email;
+    final String url = "http://192.168.1.102:3000/activedays?email=" + email;
 
     try {
       final response = await http.get(

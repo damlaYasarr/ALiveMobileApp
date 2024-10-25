@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:demo_s_application1/core/utils/image_constant.dart';
+import 'package:demo_s_application1/presentation/general_screen/general_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ class FireBaseApi {
   late final FirebaseMessaging msg;
   late final String email = Globalemail.useremail;
   Timer? _notificationTimer; // Store the Timer instance
+  GeneralScreen screenn = new GeneralScreen();
 
   FireBaseApi();
 
@@ -78,6 +80,9 @@ class FireBaseApi {
   }
 
   void _showNotification(BuildContext context, RemoteMessage event) {
+    // Timer'ın ayarlandığından emin olun
+    _notificationTimer?.cancel(); // Önceki timer'ı iptal et
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         behavior: SnackBarBehavior.floating,
@@ -85,24 +90,25 @@ class FireBaseApi {
           children: [
             GestureDetector(
               onTap: () {
+                // Kırmızı simgeye tıklayınca Snackbar'ı gizle
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                _notificationTimer
-                    ?.cancel(); // Cancel the timer on red icon click
+                _notificationTimer?.cancel(); // Timer'ı iptal et
               },
               child: Icon(Icons.error, color: Colors.red),
             ),
             SizedBox(width: 8),
             GestureDetector(
               onTap: () {
+                // Yeşil simgeye tıklayınca işlemleri yap
                 String? name = event.notification?.body ?? "No body";
                 DateTime date = DateTime.now();
                 String datex = DateFormat('dd.MM.yyyy').format(date);
                 print('$name, $datex');
-                // Approve the completed day in the database
+                // Habiti onayla
                 ApproveTheHabit(name, email, datex);
+                // Snackbar'ı gizle
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                _notificationTimer
-                    ?.cancel(); // Cancel the timer on green checkmark click
+                _notificationTimer?.cancel(); // Timer'ı iptal et
               },
               child: Icon(Icons.check_circle, color: Colors.green),
             ),
@@ -115,6 +121,7 @@ class FireBaseApi {
                 maxLines: 2,
               ),
             ),
+            SizedBox(width: 8),
             Flexible(
               child: Text(
                 "Let's do it: ${event.notification?.body ?? "No body"}",
@@ -129,10 +136,15 @@ class FireBaseApi {
         duration: Duration(minutes: 1),
       ),
     );
+
+    // Snackbar'ı gösterdikten sonra bir timer ayarlayabilirsiniz
+    _notificationTimer = Timer(Duration(seconds: 30), () {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    });
   }
 
   Future<void> ApproveTheHabit(String name, String email, String date) async {
-    final Uri url = Uri.parse('http://172.18.0.1:3000/approvaltime');
+    final Uri url = Uri.parse('http://192.168.1.102:3000/approvaltime');
 
     final Map<String, String> requestBody = {
       "email": email,
@@ -153,7 +165,7 @@ class FireBaseApi {
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         print('Habit approval request successful');
-      } else {
+
         print('Failed to approve habit: ${response.statusCode}');
       }
     } catch (e) {
@@ -164,7 +176,7 @@ class FireBaseApi {
   // Schedule notification via HTTP request
   Future<void> scheduleNotification(String token, String email) async {
     final url = Uri.parse(
-        'http://172.18.0.1:3000/send-notification?token=$token&email=$email');
+        'http://192.168.1.102:3000/send-notification?token=$token&email=$email');
     try {
       final response = await http.get(
         url,

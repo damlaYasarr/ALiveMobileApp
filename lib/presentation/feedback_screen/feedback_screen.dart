@@ -19,7 +19,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   // Function to get feedback from the API
   Future<void> getFeedBack() async {
     final Uri url = Uri.parse(
-        'http://172.18.0.1:3000/getfeedback?email=' + Globalemail.useremail);
+        'http://192.168.1.102:3000/getfeedback?email=' + Globalemail.useremail);
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {

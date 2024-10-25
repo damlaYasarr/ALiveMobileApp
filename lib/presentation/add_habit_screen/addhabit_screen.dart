@@ -38,7 +38,7 @@ class _MainpageScreenState extends State<AddHbabitScreen> {
 
   Future<void> addNewAim(String email, String aim, String aimDate,
       String endDay, String notification) async {
-    final String url = "http://172.18.0.1:3000/addnewaim";
+    final String url = "http://192.168.1.102:3000/addnewaim";
 
     // POST request body
     Map<String, String> requestBody = {
@@ -180,6 +180,16 @@ class _MainpageScreenState extends State<AddHbabitScreen> {
       onPressed: () {
         // Tüm bilgileri yazdır
         _printHabitInfo();
+        String _formatTime(TimeOfDay time) {
+          final hour =
+              time.hour % 12 == 0 ? 12 : time.hour % 12; // 12'ye göre ayarla
+          final minute =
+              time.minute.toString().padLeft(2, '0'); // Dakikayı iki haneli yap
+          final suffix = time.hour >= 12 ? 'PM' : 'AM'; // AM/PM belirteci
+          return '$hour:$minute $suffix';
+        }
+
+        String formattedNotificationTime = _formatTime(notificationTime);
 
         // Kullanıcının e-posta adresiyle addnewaim fonksiyonunu çağır
         addNewAim(
@@ -187,7 +197,7 @@ class _MainpageScreenState extends State<AddHbabitScreen> {
             habitNameController.text,
             DateFormat('dd.MM.yyyy').format(startDate),
             DateFormat('dd.MM.yyyy').format(endDate),
-            notificationTime.format(context));
+            formattedNotificationTime);
 
         // GeneralScreen ekranına geçiş yap
         Navigator.push(
