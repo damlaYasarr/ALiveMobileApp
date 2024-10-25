@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:demo_s_application1/core/utils/size_utils.dart';
 import 'package:demo_s_application1/theme/theme_helper.dart';
 
 /// A collection of pre-defined text styles for customizing text appearance,

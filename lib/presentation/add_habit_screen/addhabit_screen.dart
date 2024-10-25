@@ -58,11 +58,10 @@ class _MainpageScreenState extends State<AddHbabitScreen> {
       body: jsonEncode(requestBody),
     );
 
-    // Check the status code of the response
     if (response.statusCode == 200) {
       // Successful request
       print('Aim successfully posted');
-      print(response.body); // Response body, if needed
+      print(response.body);
     } else {
       // Request failed, print the error message
       print('Failed to post aim: ${response.statusCode}');
@@ -178,20 +177,16 @@ class _MainpageScreenState extends State<AddHbabitScreen> {
   Widget _buildSaveButton(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-        // Tüm bilgileri yazdır
         _printHabitInfo();
         String _formatTime(TimeOfDay time) {
-          final hour =
-              time.hour % 12 == 0 ? 12 : time.hour % 12; // 12'ye göre ayarla
-          final minute =
-              time.minute.toString().padLeft(2, '0'); // Dakikayı iki haneli yap
-          final suffix = time.hour >= 12 ? 'PM' : 'AM'; // AM/PM belirteci
+          final hour = time.hour % 12 == 0 ? 12 : time.hour % 12;
+          final minute = time.minute.toString().padLeft(2, '0');
+          final suffix = time.hour >= 12 ? 'PM' : 'AM';
           return '$hour:$minute $suffix';
         }
 
         String formattedNotificationTime = _formatTime(notificationTime);
 
-        // Kullanıcının e-posta adresiyle addnewaim fonksiyonunu çağır
         addNewAim(
             Globalemail.useremail,
             habitNameController.text,

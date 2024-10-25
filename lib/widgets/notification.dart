@@ -69,19 +69,16 @@ class FireBaseApi {
       print('Error getting FCM token: $e');
     }
 
-    // Start periodic notification sending
     startPeriodicNotificationSending();
   }
 
   Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     await Firebase.initializeApp();
     print("Handling a background message: ${message.messageId}");
-    // Add your custom logic to handle background messages
   }
 
   void _showNotification(BuildContext context, RemoteMessage event) {
-    // Timer'ın ayarlandığından emin olun
-    _notificationTimer?.cancel(); // Önceki timer'ı iptal et
+    _notificationTimer?.cancel();
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -90,7 +87,6 @@ class FireBaseApi {
           children: [
             GestureDetector(
               onTap: () {
-                // Kırmızı simgeye tıklayınca Snackbar'ı gizle
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
                 _notificationTimer?.cancel(); // Timer'ı iptal et
               },
@@ -99,7 +95,6 @@ class FireBaseApi {
             SizedBox(width: 8),
             GestureDetector(
               onTap: () {
-                // Yeşil simgeye tıklayınca işlemleri yap
                 String? name = event.notification?.body ?? "No body";
                 DateTime date = DateTime.now();
                 String datex = DateFormat('dd.MM.yyyy').format(date);
@@ -137,7 +132,6 @@ class FireBaseApi {
       ),
     );
 
-    // Snackbar'ı gösterdikten sonra bir timer ayarlayabilirsiniz
     _notificationTimer = Timer(Duration(seconds: 30), () {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
     });

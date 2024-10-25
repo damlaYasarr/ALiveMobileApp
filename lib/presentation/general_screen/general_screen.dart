@@ -2,13 +2,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:demo_s_application1/core/utils/image_constant.dart';
 import 'package:demo_s_application1/widgets/app_bar/appbar_trailing_button.dart';
 import 'package:demo_s_application1/widgets/app_bar/custom_app_bar.dart';
 import 'package:demo_s_application1/widgets/custom_elevated_button.dart';
 import 'package:demo_s_application1/core/app_export.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:demo_s_application1/theme/custom_text_style.dart';
 
 class Aim {
   final String name;
@@ -33,7 +31,6 @@ class Aim {
     DateTime endDay = format.parse(json['endday']);
     int totalDays = endDay.difference(startDay).inDays;
     int completeDaysCount = json['complete_days_count'];
-    int lastday = totalDays;
     int percentage =
         (totalDays > 0) ? ((completeDaysCount * 100) ~/ totalDays) : 0;
 
@@ -147,8 +144,7 @@ class _GeneralScreenState extends State<GeneralScreen> {
                 .width, // Set width to match screen width
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(
-                    "assets/images/back.png"), // Path to your background image
+                image: AssetImage("assets/images/back.png"),
                 fit: BoxFit.cover,
               ),
             ),
@@ -238,7 +234,6 @@ class _GeneralScreenState extends State<GeneralScreen> {
   }
 
   Widget _buildAutoHabitCalendar() {
-    // Generate calendar for the next 4 days starting today
     DateTime today = DateTime.now();
     List<DateTime> nextFourDays =
         List.generate(4, (index) => today.add(Duration(days: index)));
@@ -430,8 +425,6 @@ class _GeneralScreenState extends State<GeneralScreen> {
             },
           ),
           SizedBox(height: 20), // Space between buttons
-
-          // Row containing "Track Habits" and "Add" buttons
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
