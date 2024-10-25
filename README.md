@@ -70,16 +70,16 @@ google fonts
 
 <div style="display: flex; flex-wrap: wrap; padding: 10px; margin: 0; justify-content: space-around;">
     <div style="display: flex; justify-content: space-around; width: 100%;">
-        <img src="images/starting.png" alt="STARTING PAGE" width="300" style="margin: 10px;" />
-        <img src="images/listallhabits.png" alt="MAIN PAGE" width="300" style="margin: 10px;" />
-        <img src="images/addnewhabit.png" alt="NEW HABIT PAGE" width="300" style="margin: 10px;" />
+        <img src="images/starting.png" alt="STARTING PAGE" width="270" style="margin: 10px;" />
+        <img src="images/listallhabits.png" alt="MAIN PAGE" width="270" style="margin: 10px;" />
+        <img src="images/addnewhabit.png" alt="NEW HABIT PAGE" width="270" style="margin: 10px;" />
     </div>
     <div style="display: flex; justify-content: space-around; width: 100%;">
-        <img src="images/tracking.png" alt="CALENDAR PAGE" width="300" style="margin: 10px;" />
-        <img src="images/tracking2.png" alt="CALENDAR PAGE 2" width="300" style="margin: 10px;" />
-        <img src="images/feedback.png" alt="FEEDBACK SCREEN" width="300" style="margin: 10px;" />
+        <img src="images/tracking.png" alt="CALENDAR PAGE" width="270" style="margin: 10px;" />
+        <img src="images/tracking2.png" alt="CALENDAR PAGE 2" width="270" style="margin: 10px;" />
+        <img src="images/feedback.png" alt="FEEDBACK SCREEN" width="270" style="margin: 10px;" />
     </div>
     <div style="display: flex; justify-content: space-around; width: 100%;">
-        <img src="images/history.png" alt="HISTORY SCREEN" width="300" style="margin: 10px;" />
+        <img src="images/history.png" alt="HISTORY SCREEN" width="270" style="margin: 10px;" />
     </div>
 </div>
