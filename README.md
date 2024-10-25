@@ -73,7 +73,7 @@ google fonts
 
 ### list all habit screen 
 
-![MAIN PAGE](/images/listallhabits.jpeg)
+![MAIN PAGE](/images/listallhabits.png)
 
 ### add new habit screen 
 
@@ -81,16 +81,16 @@ google fonts
 
 ### track your all habit  
 
-![CALENDAR PAGE](/images/trackyourallhabit.jpeg)
+![CALENDAR PAGE](/images/tracking.png)
 
-![CALENDAR PAGE 2](/images/trackyourallhabit2.jpeg)
+![CALENDAR PAGE 2](/images/tracking2.png)
 
 
 ### feedback screen 
 
-![FEEDBACK SCREEN ](/images/feedback.jpeg)
+![FEEDBACK SCREEN ](/images/feedback.png)
 
 
-### history
+###history
 
-![HISTORY SCREEN ](/images/history.jpeg)
+![HISTORY SCREEN ](/images/history.png)
