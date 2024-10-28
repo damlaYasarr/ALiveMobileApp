@@ -1,4 +1,4 @@
-name: demo_s_application1
+name: aLive
 description: A new Flutter project.
 version: 1.0.0+1
 environment: 
@@ -11,6 +11,7 @@ dependencies:
   firebase_core: ^2.31.0
   firebase_messaging: ^14.9.2
   flutter_svg: ^2.0.9
+  flutter_launcher_icons: ^0.9.3
   grock: ^0.0.5+1
   intl: ^0.19.0
   pay: ^2.0.0
@@ -27,6 +28,12 @@ dev_dependencies:
 
   flutter_test: 
     sdk: flutter
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/icon.png"
+   
+    
 flutter: 
   uses-material-design: true
   assets: 

@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:demo_s_application1/core/utils/image_constant.dart';
+import 'package:aLive/core/utils/image_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;

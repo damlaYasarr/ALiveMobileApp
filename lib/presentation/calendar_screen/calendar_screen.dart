@@ -4,7 +4,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:demo_s_application1/core/app_export.dart';
+import 'package:aLive/core/app_export.dart';
 import 'dart:convert';
 
 // Active class representing the habit tracking data

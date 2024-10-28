@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:demo_s_application1/widgets/app_bar/appbar_trailing_button.dart';
-import 'package:demo_s_application1/widgets/app_bar/custom_app_bar.dart';
-import 'package:demo_s_application1/widgets/custom_elevated_button.dart';
-import 'package:demo_s_application1/core/app_export.dart';
+import 'package:aLive/widgets/app_bar/appbar_trailing_button.dart';
+import 'package:aLive/widgets/app_bar/custom_app_bar.dart';
+import 'package:aLive/widgets/custom_elevated_button.dart';
+import 'package:aLive/core/app_export.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Aim {

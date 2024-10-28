@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'dart:async'; // Timer için gerekli
-import 'package:demo_s_application1/presentation/general_screen/general_screen.dart';
+import 'package:aLive/presentation/general_screen/general_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart'; // Google Sign-In paketi
 import 'package:http/http.dart' as http;
 
-import 'package:demo_s_application1/core/utils/image_constant.dart';
+import 'package:aLive/core/utils/image_constant.dart';
 
 class StartingScreen extends StatefulWidget {
   const StartingScreen({Key? key}) : super(key: key);

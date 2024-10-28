@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:demo_s_application1/core/utils/size_utils.dart';
+import 'package:aLive/core/utils/size_utils.dart';
 
 String _appTheme = "primary";
 

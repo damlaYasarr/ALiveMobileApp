@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:demo_s_application1/core/app_export.dart';
+import 'package:aLive/core/app_export.dart';
 
 class AppDecoration {
   // Fill decorations

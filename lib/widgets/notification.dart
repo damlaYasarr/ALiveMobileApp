@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:demo_s_application1/core/utils/image_constant.dart';
-import 'package:demo_s_application1/presentation/general_screen/general_screen.dart';
+import 'package:aLive/core/utils/image_constant.dart';
+import 'package:aLive/presentation/general_screen/general_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -78,7 +78,7 @@ class FireBaseApi {
   }
 
   void _showNotification(BuildContext context, RemoteMessage event) {
-    _notificationTimer?.cancel();
+    _notificationTimer?.cancel(); // Cancel any existing timer
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -87,23 +87,27 @@ class FireBaseApi {
           children: [
             GestureDetector(
               onTap: () {
+                // Red icon tapped, dismiss notification
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                _notificationTimer?.cancel(); // Timer'ı iptal et
+                _notificationTimer?.cancel(); // Cancel timer
               },
               child: Icon(Icons.error, color: Colors.red),
             ),
             SizedBox(width: 8),
             GestureDetector(
               onTap: () {
+                // Green icon tapped, approve habit and update database
                 String? name = event.notification?.body ?? "No body";
                 DateTime date = DateTime.now();
                 String datex = DateFormat('dd.MM.yyyy').format(date);
                 print('$name, $datex');
-                // Habiti onayla
+
+                // Approve the habit and save it to the database
                 ApproveTheHabit(name, email, datex);
-                // Snackbar'ı gizle
+
+                // Dismiss the Snackbar
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                _notificationTimer?.cancel(); // Timer'ı iptal et
+                _notificationTimer?.cancel(); // Cancel timer
               },
               child: Icon(Icons.check_circle, color: Colors.green),
             ),
@@ -132,6 +136,7 @@ class FireBaseApi {
       ),
     );
 
+    // Automatically dismiss notification after 30 seconds
     _notificationTimer = Timer(Duration(seconds: 30), () {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
     });

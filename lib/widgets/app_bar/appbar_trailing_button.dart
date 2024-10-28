@@ -1,6 +1,6 @@
-import 'package:demo_s_application1/widgets/custom_elevated_button.dart';
+import 'package:aLive/widgets/custom_elevated_button.dart';
 import 'package:flutter/material.dart';
-import 'package:demo_s_application1/core/app_export.dart';
+import 'package:aLive/core/app_export.dart';
 
 // ignore: must_be_immutable
 class AppbarTrailingButton extends StatelessWidget {
