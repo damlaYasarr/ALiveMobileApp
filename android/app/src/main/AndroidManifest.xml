@@ -27,6 +27,9 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
+              <meta-data
+    android:name="com.google.firebase.messaging.default_notification_channel_id"
+    android:value="your_channel_id"/>
             <meta-data
              android:name="com.google.android.gms.wallet.api.enabled"
              android:value="true"/>

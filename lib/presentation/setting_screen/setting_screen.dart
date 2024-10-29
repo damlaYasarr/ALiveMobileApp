@@ -1,20 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:audioplayers/audioplayers.dart'; // Import for audio playback
 
 class SettingsPage extends StatefulWidget {
   @override
   _SettingsPageState createState() => _SettingsPageState();
 }
 
-// add here users icon, email address,
-// get permission for location
-// notif. sound
-//
-
 class _SettingsPageState extends State<SettingsPage> {
   bool _notificationSound = true; // Initial value
   final TextEditingController _commentController =
       TextEditingController(); // Controller for comments
   int _rating = 0; // For star rating
+  GoogleSignInAccount?
+      _currentUser; // To store the current user's Google account
+
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final AudioPlayer _audioPlayer = AudioPlayer(); // Audio player instance
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentUser();
+  }
+
+  Future<void> _getCurrentUser() async {
+    _currentUser = await _googleSignIn.signInSilently();
+    setState(() {}); // Refresh the UI
+  }
+
+  Future<void> _signIn() async {
+    try {
+      _currentUser = await _googleSignIn.signIn();
+      setState(() {}); // Refresh the UI
+    } catch (error) {
+      print(error);
+    }
+  }
+
+  void _playNotificationSound() async {
+    if (_notificationSound) {
+      await _audioPlayer.play(AssetSource(
+          'sounds/notification.mp3')); // Change to your sound file path
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +57,31 @@ class _SettingsPageState extends State<SettingsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // User Profile Section
+            if (_currentUser != null) ...[
+              CircleAvatar(
+                backgroundImage: NetworkImage(_currentUser!.photoUrl ?? ''),
+                radius: 40,
+              ),
+              SizedBox(height: 8),
+              Text(
+                _currentUser!.displayName ?? 'No Name',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                _currentUser!.email,
+                style: TextStyle(fontSize: 16),
+              ),
+              SizedBox(height: 16),
+            ] else ...[
+              Text('You are not signed in.'),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _signIn,
+                child: Text('Sign in with Google'),
+              ),
+            ],
+
             // Notification Sound Toggle
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -41,7 +95,6 @@ class _SettingsPageState extends State<SettingsPage> {
                   onChanged: (value) {
                     setState(() {
                       _notificationSound = value;
-                      // Call your notification sound method here if needed
                     });
                   },
                 ),
@@ -95,7 +148,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 },
                 style: ElevatedButton.styleFrom(
                   padding:
-                      EdgeInsets.symmetric(horizontal: 24.0, vertical: 36.0),
+                      EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
                   backgroundColor: const Color.fromARGB(
                       255, 88, 221, 199), // Custom button color
                   shape: RoundedRectangleBorder(
@@ -109,5 +162,9 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
       ),
     );
+  }
+
+  void handleIncomingNotification() {
+    _playNotificationSound(); // Play sound if enabled
   }
 }

@@ -17,6 +17,8 @@ dependencies:
   flutter_launcher_icons: ^0.9.3
   grock: ^0.0.5+1
   intl: any
+  shared_preferences: ^2.0.13
+  audioplayers: ^6.1.0
   pay: ^2.0.0
   table_calendar: ^3.0.9
   google_fonts: ^6.2.1
@@ -43,7 +45,9 @@ flutter:
   assets: 
     - assets/
     - assets/images/
+    - assets/sounds/notification.mp3
     - lib/l10n/
+   
 
   fonts: 
     - family: Inika

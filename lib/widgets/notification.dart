@@ -1,12 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:aLive/core/utils/image_constant.dart';
+import 'package:aLive/generated/l10n.dart';
 import 'package:aLive/presentation/general_screen/general_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:aLive/core/utils/prefs_helper.dart';
+import 'package:aLive/core/utils/playNotificationSound.dart';
 
 class FireBaseApi {
   late final FirebaseMessaging msg;
@@ -39,7 +42,6 @@ class FireBaseApi {
     }
   }
 
-  // Connect to Firebase Cloud Messaging and handle notifications
   void connectNotification(BuildContext context) async {
     await initializeFirebase();
     requestNotificationPermissions();
@@ -50,8 +52,13 @@ class FireBaseApi {
       badge: true,
     );
 
-    // Listen for incoming messages
-    FirebaseMessaging.onMessage.listen((RemoteMessage event) {
+    FirebaseMessaging.onMessage.listen((RemoteMessage event) async {
+      bool soundEnabled = await PrefsHelper.getNotificationSound();
+
+      if (soundEnabled) {
+        playNotificationSound();
+      }
+
       _showNotification(context, event);
     });
 
@@ -79,7 +86,7 @@ class FireBaseApi {
 
   void _showNotification(BuildContext context, RemoteMessage event) {
     _notificationTimer?.cancel(); // Cancel any existing timer
-
+    playNotificationSound();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         behavior: SnackBarBehavior.floating,
@@ -123,7 +130,7 @@ class FireBaseApi {
             SizedBox(width: 8),
             Flexible(
               child: Text(
-                "Let's do it: ${event.notification?.body ?? "No body"}",
+                "${S.of(context).Letsdoit}: ${event.notification?.body ?? "No body"}",
                 style: TextStyle(color: Colors.black, fontSize: 15),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,
