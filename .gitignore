@@ -10,4 +10,7 @@
 /pubspec.lock
 
 /test
-/flutter 
+
+/flutter/
+/lib/generated/
+/lib/l10n/

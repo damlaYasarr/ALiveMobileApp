@@ -10,6 +10,10 @@ The aim of the app is to easily build habits. The logic of using the app is very
 - ``` flutter run ```
 
 
+### Language Supporter
+- Language will change depends on user's location
+- here is the command for lang.
+- ```dart run intl_utils:generate```
 
 ### System requirements
 

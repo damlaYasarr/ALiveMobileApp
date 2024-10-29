@@ -1,8 +1,8 @@
 import 'dart:convert';
+import 'package:aLive/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:aLive/widgets/app_bar/appbar_trailing_button.dart';
 import 'package:aLive/widgets/app_bar/custom_app_bar.dart';
 import 'package:aLive/widgets/custom_elevated_button.dart';
 import 'package:aLive/core/app_export.dart';
@@ -64,7 +64,7 @@ class _GeneralScreenState extends State<GeneralScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Sayfa her açıldığında bu metod çağrılır
+    // call these method to refresh the page
     listAllAims(Globalemail.useremail);
   }
 
@@ -73,7 +73,7 @@ class _GeneralScreenState extends State<GeneralScreen> {
   }
 
   Future<void> deleteHabit(String email, String aimName) async {
-    final Uri url = Uri.parse('http://192.168.1.102:3000/deletehabit');
+    final Uri url = Uri.parse('http://192.168.1.64:3000/deletehabit');
 
     // Construct the URL with query parameters
     final String queryParameters = '?email=$email&name=$aimName';
@@ -104,7 +104,7 @@ class _GeneralScreenState extends State<GeneralScreen> {
   }
 
   Future<void> listAllAims(String email) async {
-    final String url = "http://192.168.1.102:3000/listallAims?email=" + email;
+    final String url = "http://192.168.1.64:3000/listallAims?email=" + email;
 
     try {
       final response = await http.get(
@@ -184,30 +184,34 @@ class _GeneralScreenState extends State<GeneralScreen> {
                 );
               },
               child: Padding(
-                padding: EdgeInsets.only(
-                    top: 0.0), // Adjust this value to move the text higher
+                padding: EdgeInsets.only(top: 0.0),
                 child: Text(
                   'alive',
-                  style: GoogleFonts.pacifico(
-                    fontSize: 35,
-                  ),
+                  style: GoogleFonts.pacifico(fontSize: 35),
                 ),
               ),
             ),
-            SizedBox(width: 110),
+            SizedBox(width: 110), // Space adjustment
           ],
         ),
         Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            AppbarTrailingButton(
-              margin: EdgeInsets.symmetric(horizontal: 20.h, vertical: 8.v),
+            IconButton(
+              icon: Icon(Icons.feedback),
               onPressed: () {
                 onTapMore(context);
               },
             ),
+            SizedBox(width: 1.h), // Adjusted spacing for better separation
+            IconButton(
+              icon: Icon(Icons.settings),
+              onPressed: () {
+                gotosetting(context);
+              },
+            ),
           ],
-        ),
+        )
       ],
     );
   }
@@ -219,7 +223,7 @@ class _GeneralScreenState extends State<GeneralScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Your Habits",
+            S.of(context).YourHabits,
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -349,7 +353,7 @@ class _GeneralScreenState extends State<GeneralScreen> {
                 ),
                 SizedBox(height: 8),
                 Text(
-                  "Duration: ${aim.lastday} days",
+                  " ${S.of(context).Duration}: ${aim.lastday} ${S.of(context).Days}",
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.teal[700],
@@ -412,7 +416,7 @@ class _GeneralScreenState extends State<GeneralScreen> {
           CustomElevatedButton(
             height: 50,
             width: double.infinity,
-            text: "Go to History",
+            text: S.of(context).GoToHistory,
             buttonTextStyle: TextStyle(
               fontSize: 14,
               color: Colors.white,
@@ -432,7 +436,7 @@ class _GeneralScreenState extends State<GeneralScreen> {
                 child: CustomElevatedButton(
                   height: 50,
                   width: double.infinity,
-                  text: "Track Habits",
+                  text: S.of(context).TrackYourDevelopment,
                   buttonTextStyle: TextStyle(
                     fontSize: 14,
                     color: Colors.white,
@@ -450,7 +454,7 @@ class _GeneralScreenState extends State<GeneralScreen> {
                 child: CustomElevatedButton(
                   height: 50,
                   width: double.infinity,
-                  text: "Add",
+                  text: S.of(context).Add,
                   buttonTextStyle: TextStyle(
                     fontSize: 14,
                     color: Colors.white,
@@ -488,5 +492,9 @@ class _GeneralScreenState extends State<GeneralScreen> {
 
   void goHistoryPage(BuildContext context) {
     Navigator.pushNamed(context, AppRoutes.overviewScreen);
+  }
+
+  void gotosetting(BuildContext context) {
+    Navigator.pushNamed(context, AppRoutes.settingScreen);
   }
 }

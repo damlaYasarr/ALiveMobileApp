@@ -66,7 +66,7 @@ class _StartingScreenState extends State<StartingScreen>
   }
 
   Future<void> postEmail(String email) async {
-    final String url = "http://192.168.1.102:3000/postemail";
+    final String url = "http://192.168.1.64:3000/postemail";
 
     // POST request body
     Map<String, String> requestBody = {

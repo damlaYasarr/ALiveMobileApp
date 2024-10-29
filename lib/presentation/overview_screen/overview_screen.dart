@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:aLive/core/utils/image_constant.dart';
+import 'package:aLive/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
@@ -53,7 +54,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   Future<void> listExpiredAims(String email) async {
     final String url =
-        "http://192.168.1.102:3000/listexpiredhabits?email=" + email;
+        "http://192.168.1.64:3000/listexpiredhabits?email=" + email;
 
     try {
       final response = await http.get(
@@ -105,7 +106,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
               children: [
                 AppBar(
                   title: Text(
-                    'List your expired habits',
+                    S.of(context).SeeyourExpiredHabit,
                     style: TextStyle(color: Colors.white),
                   ),
                   backgroundColor: Colors.green[900],
@@ -174,7 +175,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           Row(
             children: [
               Text(
-                "$completionPercentage% completed",
+                "$completionPercentage% ${S.of(context).Completed}",
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.green[800],

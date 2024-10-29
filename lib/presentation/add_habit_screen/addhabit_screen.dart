@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:aLive/core/utils/image_constant.dart';
+import 'package:aLive/generated/l10n.dart';
 
 import 'package:flutter/material.dart';
 import 'package:aLive/presentation/general_screen/general_screen.dart';
@@ -38,7 +39,7 @@ class _MainpageScreenState extends State<AddHbabitScreen> {
 
   Future<void> addNewAim(String email, String aim, String aimDate,
       String endDay, String notification) async {
-    final String url = "http://192.168.1.102:3000/addnewaim";
+    final String url = "http://192.168.1.64:3000/addnewaim";
 
     // POST request body
     Map<String, String> requestBody = {
@@ -94,13 +95,13 @@ class _MainpageScreenState extends State<AddHbabitScreen> {
                 SizedBox(height: 40),
                 _buildTitle(),
                 SizedBox(height: 20),
-                _buildTextField("New Habit:", habitNameController),
+                _buildTextField(S.of(context).NewHabit, habitNameController),
                 SizedBox(height: 20),
-                _buildDateButton("Starting Date:", startDate, true),
+                _buildDateButton(S.of(context).StartingDate, startDate, true),
                 SizedBox(height: 20),
-                _buildDateButton("Ending Date:", endDate, false),
+                _buildDateButton(S.of(context).EndingDate, endDate, false),
                 SizedBox(height: 20),
-                _buildTimeButton("Notification Hours:", notificationTime),
+                _buildTimeButton(S.of(context).NotifHour, notificationTime),
                 SizedBox(height: 20),
                 _buildSaveButton(context),
               ],
@@ -113,7 +114,7 @@ class _MainpageScreenState extends State<AddHbabitScreen> {
 
   Widget _buildTitle() {
     return Text(
-      "Create New Habit",
+      S.of(context).CreateNewHabit,
       style: TextStyle(
         fontSize: 24,
         fontWeight: FontWeight.bold,
@@ -203,7 +204,7 @@ class _MainpageScreenState extends State<AddHbabitScreen> {
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 15, horizontal: 40),
         child: Text(
-          "Save",
+          S.of(context).Save,
           style: TextStyle(fontSize: 24, color: Colors.white),
         ),
       ),

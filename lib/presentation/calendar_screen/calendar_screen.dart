@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:aLive/core/app_export.dart';
 import 'dart:convert';
+import 'package:aLive/generated/l10n.dart';
 
 // Active class representing the habit tracking data
 class Active {
@@ -66,7 +67,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Future<void> getActives(String email) async {
-    final String url = "http://192.168.1.102:3000/activedays?email=$email";
+    final String url = "http://192.168.1.64:3000/activedays?email=$email";
 
     try {
       final response = await http.get(
@@ -97,7 +98,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            'Track your habits',
+            S.of(context).TrackYourDevelopment,
             style: TextStyle(color: Colors.white),
           ),
           backgroundColor: Colors.green[900],
@@ -318,7 +319,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
       child: Column(
         children: [
           Text(
-            'Achievement Graph',
+            S.of(context).AchievementGraph,
             style: TextStyle(
               fontSize: 24.0,
               fontWeight: FontWeight.bold,

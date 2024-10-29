@@ -1,4 +1,5 @@
 import 'package:aLive/core/utils/image_constant.dart';
+import 'package:aLive/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert'; // For handling JSON
 import 'package:http/http.dart' as http; // For making HTTP requests
@@ -23,7 +24,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
     });
 
     final Uri url = Uri.parse(
-        'http://192.168.1.102:3000/getfeedback?email=' + Globalemail.useremail);
+        'http://192.168.1.64:3000/getfeedback?email=' + Globalemail.useremail);
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
@@ -39,7 +40,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       print("Error fetching feedback: $e");
       setState(() {
         isLoading = false; // Set loading to false if there's an error
-        feedbackText = "An error occurred while fetching feedback.";
+        feedbackText = S.of(context).ErrorOccurred;
       });
     }
   }
@@ -65,7 +66,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
               children: [
                 AppBar(
                   title: Text(
-                    'Information',
+                    S.of(context).Information,
                     style: TextStyle(color: Colors.white),
                   ),
                   backgroundColor: Colors.green[900],
@@ -100,7 +101,8 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                                 true; // Show Get Feedback button
                           });
                         },
-                        child: Text('Would you like to see your progress?'),
+                        child:
+                            Text(S.of(context).WouldYouLikeToSeeYourProgress),
                       ),
                       SizedBox(height: 20), // Spacing between button and arrow
                       Icon(
@@ -130,7 +132,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                       onPressed: () {
                         getFeedBack(); // Fetch feedback from the server
                       },
-                      child: Text('Get Feedback'),
+                      child: Text(S.of(context).GetFeedback),
                     ),
                   ),
 
@@ -139,7 +141,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                   Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Text(
-                      'Please wait, loading your feedback...',
+                      S.of(context).ComingFeedback,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w400,
@@ -153,6 +155,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                   Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Text(
+                      //HERE IS THE PROBLEM FIX THE SERVER FUNCTION
                       feedbackText == ""
                           ? "Henüz eklediğiniz alışkanlıklarda tamamen null değer olduğu için dönüş alamazsınız."
                           : feedbackText!,
