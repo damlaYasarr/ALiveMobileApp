@@ -54,7 +54,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   Future<void> listExpiredAims(String email) async {
     final String url =
-        "http://192.168.1.64:3000/listexpiredhabits?email=" + email;
+        "http://192.168.1.102:3000/listexpiredhabits?email=" + email;
 
     try {
       final response = await http.get(

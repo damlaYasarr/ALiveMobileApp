@@ -39,7 +39,7 @@ class _MainpageScreenState extends State<AddHbabitScreen> {
 
   Future<void> addNewAim(String email, String aim, String aimDate,
       String endDay, String notification) async {
-    final String url = "http://192.168.1.64:3000/addnewaim";
+    final String url = "http://192.168.1.102:3000/addnewaim";
 
     // POST request body
     Map<String, String> requestBody = {

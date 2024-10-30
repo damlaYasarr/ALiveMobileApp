@@ -1,3 +1,4 @@
+import 'package:aLive/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:audioplayers/audioplayers.dart'; // Import for audio playback
@@ -49,7 +50,8 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Settings', style: TextStyle(color: Colors.white)),
+        title:
+            Text(S.of(context).Settings, style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.teal[900],
       ),
       body: Padding(
@@ -87,7 +89,7 @@ class _SettingsPageState extends State<SettingsPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Notification Sound',
+                  S.of(context).Notification,
                   style: TextStyle(fontSize: 16),
                 ),
                 Switch(

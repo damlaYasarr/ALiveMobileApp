@@ -5,7 +5,7 @@ import '../presentation/calendar_screen/calendar_screen.dart';
 import '../presentation/add_habit_screen/addhabit_screen.dart';
 import '../presentation/overview_screen/overview_screen.dart';
 import '../presentation/feedback_screen/feedback_screen.dart';
-import '../presentation/app_navigation_screen/app_navigation_screen.dart';
+
 import 'package:aLive/presentation/setting_screen/setting_screen.dart';
 import 'package:http/http.dart' as http;
 
@@ -33,7 +33,6 @@ class AppRoutes {
     addhabitscreen: (context) => AddHbabitScreen(),
     overviewScreen: (context) => OverviewScreen(),
     feedbackscreen: (context) => FeedbackScreen(),
-    appNavigationScreen: (context) => AppNavigationScreen(),
     settingScreen: (context) => SettingsPage()
   };
 }

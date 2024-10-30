@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:aLive/generated/l10n.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,8 @@ import 'package:aLive/widgets/app_bar/custom_app_bar.dart';
 import 'package:aLive/widgets/custom_elevated_button.dart';
 import 'package:aLive/core/app_export.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Aim {
   final String name;
@@ -15,6 +18,7 @@ class Aim {
   final int completeDaysCount;
   final int percentage;
   final int lastday;
+
   Aim({
     required this.name,
     required this.startDay,
@@ -53,7 +57,7 @@ class GeneralScreen extends StatefulWidget {
 
 class _GeneralScreenState extends State<GeneralScreen> {
   List<Aim> _aims = [];
-
+  bool isMarkedForDeletion = false;
   @override
   void initState() {
     super.initState();
@@ -73,7 +77,7 @@ class _GeneralScreenState extends State<GeneralScreen> {
   }
 
   Future<void> deleteHabit(String email, String aimName) async {
-    final Uri url = Uri.parse('http://192.168.1.64:3000/deletehabit');
+    final Uri url = Uri.parse('http://192.168.1.102:3000/deletehabit');
 
     // Construct the URL with query parameters
     final String queryParameters = '?email=$email&name=$aimName';
@@ -88,9 +92,7 @@ class _GeneralScreenState extends State<GeneralScreen> {
         },
       );
 
-      // Check if the request was successful (status code 200-299)
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        // Remove the deleted habit from _aims list and update the UI
         setState(() {
           _aims.removeWhere((aim) => aim.name == aimName);
         });
@@ -103,8 +105,38 @@ class _GeneralScreenState extends State<GeneralScreen> {
     }
   }
 
+  Future<void> ApproveTheHabit(String name, String email, String date) async {
+    final Uri url = Uri.parse('http://192.168.1.102:3000/approvaltime');
+
+    final Map<String, String> requestBody = {
+      "email": email,
+      "name": name,
+      "complete_days": date,
+    };
+
+    String body = json.encode(requestBody);
+
+    try {
+      final response = await http.put(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: body,
+      );
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        print('Habit approval request successful');
+
+        print('Failed to approve habit: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Exception during habit approval request: $e');
+    }
+  }
+
   Future<void> listAllAims(String email) async {
-    final String url = "http://192.168.1.64:3000/listallAims?email=" + email;
+    final String url = "http://192.168.1.102:3000/listallAims?email=" + email;
 
     try {
       final response = await http.get(
@@ -283,127 +315,217 @@ class _GeneralScreenState extends State<GeneralScreen> {
     );
   }
 
+  Future<bool> _isConnected() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    return connectivityResult != ConnectivityResult.none;
+  }
+
   Widget _buildHabitList(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.5,
-      child: _aims.isEmpty
-          ? Container(
-              decoration: BoxDecoration(
-                color: Color.fromARGB(255, 249, 252, 215),
-                borderRadius: BorderRadius.circular(15),
-              ),
-              alignment: Alignment.center,
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Text(
-                  'This is the habit tracking application!\n'
-                  'Our aim is to help you gain habits\n'
-                  'for the dream version of yourself.\n',
-                  style: TextStyle(fontSize: 16.0),
-                  textAlign: TextAlign.justify,
-                ),
-              ),
-            )
-          : ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: _aims.length,
-              itemBuilder: (context, index) {
-                Aim aim = _aims[index];
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: _buildHabitCard(aim),
-                );
-              },
-            ),
+    return FutureBuilder<bool>(
+      future: _isConnected(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Center(
+              child: CircularProgressIndicator()); // yüklenirken gösterilecek
+        }
+        bool isConnected = snapshot.data!;
+
+        return SizedBox(
+          height: MediaQuery.of(context).size.height * 0.5,
+          child: !isConnected
+              ? Container(
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 249, 252, 215),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text(
+                      S.of(context).InternetProblem,
+                      style: TextStyle(fontSize: 16.0),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                )
+              : _aims.isEmpty
+                  ? Container(
+                      decoration: BoxDecoration(
+                        color: Color.fromARGB(255, 249, 252, 215),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      alignment: Alignment.center,
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Text(
+                          S.of(context).Startsomewhere,
+                          style: TextStyle(fontSize: 16.0),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    )
+                  : ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      itemCount: _aims.length,
+                      itemBuilder: (context, index) {
+                        Aim aim = _aims[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: _buildHabitCard(aim),
+                        );
+                      },
+                    ),
+        );
+      },
     );
+  }
+
+  void deleteHabitWithDelay(String email, Aim aim) {
+    Timer(Duration(seconds: 3), () {
+      setState(() {
+        _aims.remove(aim);
+      });
+      deleteHabit(email, aim.name);
+      isMarkedForDeletion = false;
+    });
   }
 
   Widget _buildHabitCard(Aim aim) {
     int completionPercentage = aim.percentage;
     double completedWidth = 150 * (completionPercentage / 100);
+    bool isMarkedForDeletion = false;
+    bool isChecked = false;
+    String todayDate = DateFormat('dd.MM.yyyy').format(DateTime.now());
 
-    return Container(
-      margin: EdgeInsets.only(bottom: 8.0),
-      padding: EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: Color(0xFFF9F9F9), // Kart rengi
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 2,
-            blurRadius: 7,
-            offset: Offset(0, 3),
+    return StatefulBuilder(
+      builder: (context, setState) {
+        // Checkbox durumunu yüklemek için bir fonksiyon
+        Future<void> _loadCheckboxState() async {
+          final prefs = await SharedPreferences.getInstance();
+          String lastApprovedDate = prefs.getString(aim.name) ?? "";
+
+          // Eğer son onay tarihi bugüne eşitse, checkbox'ı disable et
+          if (lastApprovedDate == todayDate) {
+            setState(() {
+              isChecked = true;
+            });
+          }
+        }
+
+        // Checkbox durumunu kaydetmek için bir fonksiyon
+        Future<void> _saveCheckboxState() async {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString(aim.name, todayDate);
+        }
+
+        // Sayfa yüklendiğinde checkbox durumunu kontrol et
+        _loadCheckboxState();
+
+        return Container(
+          margin: EdgeInsets.only(bottom: 8.0),
+          padding: EdgeInsets.all(16.0),
+          decoration: BoxDecoration(
+            color: Color(0xFFF9F9F9),
+            borderRadius: BorderRadius.circular(15),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 2,
+                blurRadius: 7,
+                offset: Offset(0, 3),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  aim.name,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.teal[800],
-                  ),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  " ${S.of(context).Duration}: ${aim.lastday} ${S.of(context).Days}",
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.teal[700],
-                  ),
-                ),
-                SizedBox(height: 8),
-                Row(
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: Container(
-                        height: 10,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: Stack(
-                          children: [
-                            Container(
-                              width: completedWidth,
-                              decoration: BoxDecoration(
-                                color: Colors.green,
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                            ),
-                          ],
-                        ),
+                    Text(
+                      aim.name,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.teal[800],
+                        decoration: isMarkedForDeletion
+                            ? TextDecoration.lineThrough
+                            : TextDecoration.none,
                       ),
                     ),
-                    SizedBox(width: 8),
+                    SizedBox(height: 8),
                     Text(
-                      "$completionPercentage%",
+                      " ${S.of(context).Duration}: ${aim.lastday} ${S.of(context).Days}",
                       style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.green[900],
-                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                        color: Colors.teal[700],
                       ),
+                    ),
+                    SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            height: 10,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[300],
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Stack(
+                              children: [
+                                Container(
+                                  width: completedWidth,
+                                  decoration: BoxDecoration(
+                                    color: Colors.green,
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          "$completionPercentage%",
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.green[900],
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+              if (!isChecked) // Checkbox'ı sadece bugün onaylanmadıysa göster
+                Checkbox(
+                  value: isChecked,
+                  onChanged: (value) {
+                    setState(() {
+                      isChecked = value!;
+                      if (isChecked) {
+                        ApproveTheHabit(
+                            aim.name, Globalemail.useremail, todayDate);
+                        _saveCheckboxState(); // Onaylandığında durumu kaydet
+                        refreshpage(context);
+                      }
+                    });
+                  },
+                ),
+              IconButton(
+                icon: Icon(Icons.delete, color: Colors.red),
+                onPressed: () {
+                  setState(() {
+                    isMarkedForDeletion = true;
+                  });
+                  deleteHabitWithDelay(Globalemail.useremail, aim);
+                },
+              ),
+            ],
           ),
-          IconButton(
-            icon: Icon(Icons.delete, color: Colors.red),
-            onPressed: () {
-              deleteHabit(Globalemail.useremail, aim.name);
-            },
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 

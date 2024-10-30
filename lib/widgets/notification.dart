@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:aLive/core/utils/image_constant.dart';
 import 'package:aLive/generated/l10n.dart';
-import 'package:aLive/presentation/general_screen/general_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +14,6 @@ class FireBaseApi {
   late final FirebaseMessaging msg;
   late final String email = Globalemail.useremail;
   Timer? _notificationTimer; // Store the Timer instance
-  GeneralScreen screenn = new GeneralScreen();
 
   FireBaseApi();
 
@@ -65,6 +63,7 @@ class FireBaseApi {
     try {
       // Get FCM token
       String? token = await msg.getToken();
+
       print("Received token: $token");
       if (token != null) {
         print("Token: $token");
@@ -150,7 +149,7 @@ class FireBaseApi {
   }
 
   Future<void> ApproveTheHabit(String name, String email, String date) async {
-    final Uri url = Uri.parse('http://192.168.1.64:3000/approvaltime');
+    final Uri url = Uri.parse('http://192.168.1.102:3000/approvaltime');
 
     final Map<String, String> requestBody = {
       "email": email,
@@ -182,7 +181,7 @@ class FireBaseApi {
   // Schedule notification via HTTP request
   Future<void> scheduleNotification(String token, String email) async {
     final url = Uri.parse(
-        'http://192.168.1.64:3000/send-notification?token=$token&email=$email');
+        'http://192.168.1.102:3000/send-notification?token=$token&email=$email');
     try {
       final response = await http.get(
         url,

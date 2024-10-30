@@ -24,7 +24,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
     });
 
     final Uri url = Uri.parse(
-        'http://192.168.1.64:3000/getfeedback?email=' + Globalemail.useremail);
+        'http://192.168.1.102:3000/getfeedback?email=' + Globalemail.useremail);
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
